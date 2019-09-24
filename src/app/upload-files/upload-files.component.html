@@ -5,8 +5,14 @@
     <div fxLayout="row" fxLayoutAlign="center center">
         <div fxFlex="70" fxLayout="column" *ngIf="files.length">
             <h3>Files: </h3>
-            <mat-card class="item-file" *ngFor="let f of files" fxLayout="row" fxLayoutAlign="space-between center">
+            <mat-card class="item-file" *ngFor="let f of files; let i = index" fxLayout="row" fxLayoutAlign="space-between center">
                 <span><mat-icon>attachment</mat-icon>{{ f.file.name }}</span>
+                <div *ngIf="f.task == null; else uploading" fxFlex="60" fxLayoutAlign="end center">
+                    <button mat-button color="accent" (click)="removeFileFromList(i)"><mat-icon>delete</mat-icon></button>
+                </div>
+                <ng-template #uploading>
+
+                </ng-template>
             </mat-card>
             <div fxLayout="row" fxLayoutAlign="end center">
                 <button mat-button color="primary">
