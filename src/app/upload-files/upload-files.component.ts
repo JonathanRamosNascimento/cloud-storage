@@ -30,4 +30,8 @@ export class UploadFilesComponent implements OnInit {
   removeFileFromList(i) {
     this.files.splice(i, 1);
   }
+
+  uploadAll() {
+    
+  }
 }
