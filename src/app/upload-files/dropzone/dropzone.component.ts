@@ -7,9 +7,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DropzoneComponent implements OnInit {
 
+  isDraggingOver = false;
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  onDragOverEvent(event: DragEvent){
+    console.log(event);
+    this.isDraggingOver = true;
+  }
+
+  onDragLeaveEvent(event: DragEvent){
+    console.log(event);
+    this.isDraggingOver = false;
+  }
 }
