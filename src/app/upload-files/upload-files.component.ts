@@ -1,3 +1,4 @@
+import { FilesService } from './../files.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,12 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UploadFilesComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private filesService: FilesService
+  ) { }
 
   ngOnInit() {
   }
 
   onDropFiles(files: FileList) {
+    for (let i = 0; i < files.length; i++) {
+      this.filesService.uploadFile(files.item(i));
+    }
     console.log(files);
   }
 }
