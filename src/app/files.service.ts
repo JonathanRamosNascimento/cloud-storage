@@ -3,7 +3,7 @@ import { FileEntry } from './models/fileentry.model';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map, catchError, finalize } from 'rxjs/operators';
-import { of, from } from 'rxjs';
+import { of, from, Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 
 @Injectable({
@@ -20,10 +20,10 @@ export class FilesService {
     this.filesCollection = afs.collection('myfiles', ref => ref.orderBy('date', 'desc'));
   }
 
-  uploadFile(f: File){
+  uploadFile(f: File) {
     let path = `myfiles/${f.name}`;
     let task = this.storage.upload(path, f);
-    task.snapshotChanges().subscribe((s)=> console.log(s));
+    task.snapshotChanges().subscribe((s) => console.log(s));
   }
 
   upload(f: FileEntry) {
@@ -39,7 +39,7 @@ export class FilesService {
     this.fillAttributes(f);
     f.task.snapshotChanges().pipe(
       finalize(() => {
-        if(f.task.task.snapshot.state == 'success') {
+        if (f.task.task.snapshot.state == 'success') {
           this.filesCollection.add({
             filename: f.file.name,
             path: path,
@@ -53,11 +53,23 @@ export class FilesService {
 
   fillAttributes(f: FileEntry) {
     f.percentage = f.task.percentageChanges();
-    f.uploading = f.state.pipe(map((s) => s=="running"));
-    f.finished = from (f.task).pipe(map((s) => s.state=="success"));
-    f.paused = f.state.pipe(map((s) => s=="paused"));
-    f.error = f.state.pipe(map((s) => s=="error"));
-    f.canceled = f.state.pipe(map((s) => s=="canceled"));
+    f.uploading = f.state.pipe(map((s) => s == "running"));
+    f.finished = from(f.task).pipe(map((s) => s.state == "success"));
+    f.paused = f.state.pipe(map((s) => s == "paused"));
+    f.error = f.state.pipe(map((s) => s == "error"));
+    f.canceled = f.state.pipe(map((s) => s == "canceled"));
     f.bytesuploaded = f.task.snapshotChanges().pipe((map(s => s.bytesTransferred)));
+  }
+
+  getFiles(): Observable<MyFile[]> {
+    return this.filesCollection.snapshotChanges()
+      .pipe(map((actions) => {
+        return actions.map(a => {
+          const file: MyFile = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          const url = this.storage.ref(file.path).getDownloadURL();
+          return { id, ...file, url };
+        })
+      }))
   }
 }
