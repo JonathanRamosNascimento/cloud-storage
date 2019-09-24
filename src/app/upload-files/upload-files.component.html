@@ -11,7 +11,13 @@
                     <button mat-button color="accent" (click)="removeFileFromList(i)"><mat-icon>delete</mat-icon></button>
                 </div>
                 <ng-template #uploading>
-
+                    <div fxLayout="row" fxLayoutAlign="end center" fxFlex="40">
+                        <button mat-icon-button color="accent" *ngIf="f.uploading | async" (click)="f.task.cancel()"><mat-icon>cancel</mat-icon></button>
+                        <button mat-icon-button color="warn"  *ngIf="f.uploading | async" (click)="f.task.pause()"><mat-icon>pause</mat-icon></button>
+                        <button mat-icon-button color="primary"  *ngIf="f.paused | async"(click)="f.task.resume()"><mat-icon>play_arrow</mat-icon></button>
+                        <mat-icon *ngIf="(f.error | async) || (f.canceled | async)" color="warn">error</mat-icon>
+                        <mat-icon color="primary" *ngIf="f.finished | async">done</mat-icon>
+                    </div>
                 </ng-template>
             </mat-card>
             <div fxLayout="row" fxLayoutAlign="end center">
