@@ -1,1 +1,18 @@
-<app-dropzone (droppedfiles)="onDropFiles($event)"></app-dropzone>
+<div class="box-app" fxLayout="column" fxLayoutAlign="space-around stretch">
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <app-dropzone fxFlex="80" (droppedfiles)="onDropFiles($event)"></app-dropzone>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <div fxFlex="70" fxLayout="column" *ngIf="files.length">
+            <h3>Files: </h3>
+            <mat-card class="item-file" *ngFor="let f of files" fxLayout="row" fxLayoutAlign="space-between center">
+                <span><mat-icon>attachment</mat-icon>{{ f.file.name }}</span>
+            </mat-card>
+            <div fxLayout="row" fxLayoutAlign="end center">
+                <button mat-button color="primary">
+                    <mat-icon>cloud_upload</mat-icon> Send all
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

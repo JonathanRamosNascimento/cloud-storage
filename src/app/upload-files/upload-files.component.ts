@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UploadFilesComponent implements OnInit {
 
-  private files: FileEntry[];
+  private files: FileEntry[] = [];
 
   constructor(
     private filesService: FilesService
