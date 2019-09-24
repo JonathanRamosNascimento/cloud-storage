@@ -12,4 +12,7 @@ export class UploadFilesComponent implements OnInit {
   ngOnInit() {
   }
 
+  onDropFiles(files: FileList) {
+    console.log(files);
+  }
 }
