@@ -1,17 +1,24 @@
+import { MyFile } from './models/myfile.model';
 import { FileEntry } from './models/fileentry.model';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize } from 'rxjs/operators';
 import { of, from } from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilesService {
 
+  private filesCollection: AngularFirestoreCollection<MyFile>;
+
   constructor(
-    private storage: AngularFireStorage
-  ) { }
+    private storage: AngularFireStorage,
+    private afs: AngularFirestore
+  ) {
+    this.filesCollection = afs.collection('myfiles', ref => ref.orderBy('date', 'desc'));
+  }
 
   uploadFile(f: File){
     let path = `myfiles/${f.name}`;
@@ -30,6 +37,18 @@ export class FilesService {
       })
     )
     this.fillAttributes(f);
+    f.task.snapshotChanges().pipe(
+      finalize(() => {
+        if(f.task.task.snapshot.state == 'success') {
+          this.filesCollection.add({
+            filename: f.file.name,
+            path: path,
+            date: (new Date()).getTime(),
+            size: f.file.size
+          });
+        }
+      })
+    ).subscribe();
   }
 
   fillAttributes(f: FileEntry) {

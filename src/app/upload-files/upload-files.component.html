@@ -20,7 +20,8 @@
                         <ng-container *ngIf="!(f.finished | async) && !((f.error | async) || (f.canceled | async))">
                             <span style="font-style: italic; margin-right: 10px;">{{ f.bytesuploaded | async }}
                                 bytes</span>
-                            <mat-progress-bar mode="determinate" [value]="f.percentage | async" style="max-width: 200px;">
+                            <mat-progress-bar mode="determinate" [value]="f.percentage | async"
+                                style="max-width: 200px;">
                             </mat-progress-bar>
                             <button mat-icon-button color="accent" *ngIf="f.uploading | async"
                                 (click)="f.task.cancel()">
