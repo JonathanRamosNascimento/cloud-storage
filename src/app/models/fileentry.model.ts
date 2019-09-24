@@ -10,6 +10,6 @@ export interface FileEntry {
     paused: Observable<boolean>;
     error: Observable<boolean>;
     canceled: Observable<boolean>;
-    bytesuploaded: Observable<boolean>;
+    bytesuploaded: Observable<number>;
     state: Observable<string>;
 }

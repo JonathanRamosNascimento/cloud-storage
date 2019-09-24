@@ -2,7 +2,7 @@ import { FileEntry } from './models/fileentry.model';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +29,16 @@ export class FilesService {
         return of(f.task.task.snapshot.state);
       })
     )
+    this.fillAttributes(f);
+  }
+
+  fillAttributes(f: FileEntry) {
+    f.percentage = f.task.percentageChanges();
+    f.uploading = f.state.pipe(map((s) => s=="running"));
+    f.finished = from (f.task).pipe(map((s) => s.state=="success"));
+    f.paused = f.state.pipe(map((s) => s=="paused"));
+    f.error = f.state.pipe(map((s) => s=="error"));
+    f.canceled = f.state.pipe(map((s) => s=="canceled"));
+    f.bytesuploaded = f.task.snapshotChanges().pipe((map(s => s.bytesTransferred)));
   }
 }
