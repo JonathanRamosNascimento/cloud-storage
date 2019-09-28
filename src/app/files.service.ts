@@ -72,4 +72,9 @@ export class FilesService {
         })
       }))
   }
+
+  deleteFile(f: MyFile) {
+    this.storage.ref(f.path).delete();
+    this.filesCollection.doc(f.id).delete();
+  }
 }
